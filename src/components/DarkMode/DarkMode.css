@@ -23,7 +23,7 @@
     top: 3px;
     left: 3px;
     /* this is where you change the color */
-    background: linear-gradient(180deg, #ffcc89, #0b64d8);
+    background: linear-gradient(180deg, #ffcc89, #fc9905);
     border-radius: 180px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
     transition: 0.3s;

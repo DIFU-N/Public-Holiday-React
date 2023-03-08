@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import Sun from "./Sun.jsx";
 import Moon from "./Moon.jsx";
 import "./DarkMode.css";
-import { toggleTheme, setThemeDark, setThemeLight } from '../themeSlice';
+import { toggleTheme, setThemeDark, setThemeLight } from '../../app/themeSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 
 const DarkMode = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
 
   useEffect(() => {
