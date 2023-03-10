@@ -19,7 +19,8 @@ function ThemeProvider({ children }) {
     <ThemeContext.Provider value={{ theme }}>
       <div className='w-full border' style={{
         background: theme === 'light' ? lightTheme.colors.background : darkTheme.colors.background,
-        color: theme === 'light' ? lightTheme.colors.text : darkTheme.colors.text
+        color: theme === 'light' ? lightTheme.colors.text : darkTheme.colors.text,
+        fontFamily: darkTheme.colors.font,
         }}>
         {children}
       </div>
