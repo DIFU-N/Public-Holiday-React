@@ -2,11 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import apiKey  from "../apiKey";
 
+// const current = new Date();
+// const date = `2023-01-01`;
+// const date = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`;
+
 const initialState = {
     loading: false,
     holidays: [],
-    error: ''
+    error: '',
+    noCode: false,
 }
+
+export const changeNoCode = (noCode) => {return noCode = true;}
+
 export const fetchHoliday = createAsyncThunk('holiday/fetchHoliday', async (countryCode) => {
     const options = {
         headers: {
@@ -18,8 +26,6 @@ export const fetchHoliday = createAsyncThunk('holiday/fetchHoliday', async (coun
     return response.data;
 })
 
-
-
 const holidaySlice = createSlice({
     name: 'holidays',
     initialState,
@@ -29,22 +35,20 @@ const holidaySlice = createSlice({
         })
         builder.addCase(fetchHoliday.fulfilled, (state, action) => {
             state.loading = false
+            state.noCode = false;
             state.holidays = action.payload
             if (!action.payload) {
                 console.log('chale');
-            }else {
-                console.log(state.holidays);
-            }
-            state.error = ''
+                state.noCode = changeNoCode(true); 
+            } 
         })
         builder.addCase(fetchHoliday.rejected, (state, action) => {
             state.loading = false
             state.holidays = []
-            state.error = action.error.message
+            state.error = action.error.message;
             console.log(action.error.message);
         })
     }
 });
-
 
 export default holidaySlice.reducer;
