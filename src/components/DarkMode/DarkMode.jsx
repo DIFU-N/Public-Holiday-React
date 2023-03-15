@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, memo } from "react";
 import Sun from "./Sun.jsx";
 import Moon from "./Moon.jsx";
 import "./DarkMode.css";
@@ -47,4 +47,4 @@ const DarkMode = () => {
     );
 };
 
-export default DarkMode;
+export default memo(DarkMode);

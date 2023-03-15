@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCountries, setSelectedCountry } from '../app/countriesSlice';
 import { fetchHoliday, changeNoCode } from '../app/holidaySlice';
-import { toggleTheme, setThemeDark, setThemeLight } from '../app/themeSlice';
 import { setIsDateTrue, setIsDateFalse } from '../app/todaySlice';
 import  DarkMode from "./DarkMode/DarkMode";
 
 const HomePage = () => {
     const dispatch = useDispatch();
-    const currentTheme = useSelector((state) => state.theme.currentTheme);
     const holidayRetrieved = useSelector((state) => state.holiday.holidays);
     const countriesList = useSelector((state) => state.countries.countries);
     const today = useSelector((state) => state.today.isDate);
@@ -23,22 +21,22 @@ const HomePage = () => {
         dispatch(fetchCountries());
     }, []);
     //Themes
-    useEffect(() => {
-        // default theme change useEffect
-        if(window.matchMedia('(prefers-color-scheme: dark)').matches){
-            dispatch(setThemeDark());
-        } else {
-            dispatch(setThemeLight());
-        }
-    }, [])
-    useEffect(() => {
-        // button click theme change useEffect
-        if (currentTheme === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    }, [currentTheme]);
+    // useEffect(() => {
+    //     // default theme change useEffect
+    //     if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+    //         dispatch(setThemeDark());
+    //     } else {
+    //         dispatch(setThemeLight());
+    //     }
+    // }, [])
+    // useEffect(() => {
+    //     // button click theme change useEffect
+    //     if (currentTheme === "dark") {
+    //         document.documentElement.classList.add("dark");
+    //     } else {
+    //         document.documentElement.classList.remove("dark");
+    //     }
+    // }, [currentTheme]);
     
     const [holidayName, setHolidayName] = useState('');
     const [holidayPresent, setHolidayPresent] = useState(false);
@@ -61,10 +59,15 @@ const HomePage = () => {
             }
         });
     }
-    
+    const isFirstRender = useRef(true);
     useEffect(() => {
-        console.log(today);
-        Results();
+        if (isFirstRender.current) {
+            // skip first render
+            isFirstRender.current = false;
+        } else {
+            console.log(today);
+            Results();
+        }
     }, [today]);
 
     // if there is a holiday today
@@ -79,21 +82,33 @@ const HomePage = () => {
     const noCode = useSelector(state => state.holiday.noCode);
     const [noCountryCode, setNoCountryCode] = useState(false);
 
+    const isFirstRender1 = useRef(true);
     useEffect(() => {
-        console.log(holidayRetrieved);
-        if (holidayRetrieved.length === 0) {
-            setLoading(true);
-            return
+        if (isFirstRender1.current) {
+            // skip first render
+            isFirstRender1.current = false;
         } else {
-            setNoCountryCode(false);
-            isTodayAHoliday();
+            console.log(holidayRetrieved);
+            if (holidayRetrieved.length === 0) {
+                setLoading(true);
+                return
+            } else {
+                setNoCountryCode(false);
+                isTodayAHoliday();
+            }
         }
     }, [holidayRetrieved])
 
+    const isFirstRender2 = useRef(true);
     useEffect(()=> {
-        console.log(noCode);
-        setLoading(false)
-        setNoCountryCode(true);
+        if (isFirstRender2.current) {
+            // skip first render
+            isFirstRender2.current = false;
+        } else {
+            console.log(noCode);
+            setLoading(false)
+            setNoCountryCode(true);
+        }
     }, [noCode])
     const options = countriesList.map((country) => ({ value: country.name, key: country.code}))
     
@@ -108,7 +123,7 @@ const HomePage = () => {
             (option) => option.value.charAt(0) === firstLetter
         );
         setFilteredOptions(filtered);
-        setTypedText(input);
+        setTypedText(firstLetter + input.slice(1));
         if (showResults) {
             setTypedText('');
         }
@@ -213,9 +228,15 @@ const HomePage = () => {
                                     onChange={handleInputChange}
                                     list="countries" 
                                 />
-                                {filteredOptions && (
-                                    <datalist id="countries" className="absolute top-8 w-full">
+                                {filteredOptions ? (
+                                    <datalist id="countries" className="fixed top-8 w-full">
                                         {filteredOptions.map((option) => (
+                                            <option key={option.key} value={option.value} />
+                                        ))}
+                                    </datalist>
+                                ) : (
+                                    <datalist id="countries" className="fixed top-8 w-full">
+                                        {options.map((option) => (
                                             <option key={option.key} value={option.value} />
                                         ))}
                                     </datalist>
